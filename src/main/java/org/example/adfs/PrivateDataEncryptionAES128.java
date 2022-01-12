@@ -1,26 +1,50 @@
 package org.example.adfs;
 
-import javax.crypto.Cipher;
-import javax.crypto.spec.IvParameterSpec;
-import java.nio.charset.StandardCharsets;
-import java.security.Key;
 
-public class PrivateDataEncryptionAES128 extends PrivateDataEncryption {
+import java.io.File;
 
-    public static byte[] iv;
-    private final byte[] bytes;
-    public Key key;
-    public String data;
+public class PrivateDataEncryptionAES128 implements PrivateDataEncryption {
+    private static final int NB_ITERATION = 100000;
+    private static final int SALT_LENGTH = 24;
+    private static final int DEFAULT_KEY_LEN = 16;
+    private static final int DEFAULT_IV_LEN = 16;
+    private final String pseudoRandomAlgorithm;
+    private final String cipherAlgorithm;
+    private final String charset;
+    private final RandomGenerator randomGenerator;
+    private final File derivedKeyDirectory;
+    private final PBKDF2 pbkdf2;
 
-
-    public PrivateDataEncryptionAES128(String sha1PRNG, String hmacSHA256, String cypher, String s1) throws Exception {
-        super();
-        Cipher aesCipher = Cipher.getInstance(cypher);
-        aesCipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(iv));
-        bytes = aesCipher.doFinal(data.getBytes(StandardCharsets.UTF_8));
+    protected PrivateDataEncryptionAES128(String secureRandomAlgorithm, String pseudoRandomAlgorithm, String cipherAlgorithm, String charset) {
+        this.pseudoRandomAlgorithm = pseudoRandomAlgorithm;
+        this.cipherAlgorithm = cipherAlgorithm;
+        this.charset = charset;
+        this.randomGenerator = new RandomGenerator(secureRandomAlgorithm);
+        this.pbkdf2 = new PBKDF2(pseudoRandomAlgorithm);
+        this.derivedKeyDirectory = new File(".");
     }
 
-    public byte[] getBytes() {
-        return bytes;
+    public String getPseudoRandomAlgorithm() {
+        return pseudoRandomAlgorithm;
+    }
+
+    public String getCipherAlgorithm() {
+        return cipherAlgorithm;
+    }
+
+    public String getCharset() {
+        return charset;
+    }
+
+    public RandomGenerator getRandomGenerator() {
+        return randomGenerator;
+    }
+
+    public File getDerivedKeyDirectory() {
+        return derivedKeyDirectory;
+    }
+
+    public PBKDF2 getPbkdf2() {
+        return pbkdf2;
     }
 }
