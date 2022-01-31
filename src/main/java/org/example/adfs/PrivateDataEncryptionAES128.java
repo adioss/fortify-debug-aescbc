@@ -2,6 +2,7 @@ package org.example.adfs;
 
 
 import java.io.File;
+import java.util.Arrays;
 
 public class PrivateDataEncryptionAES128 implements PrivateDataEncryption {
     private static final int NB_ITERATION = 100000;
@@ -46,5 +47,14 @@ public class PrivateDataEncryptionAES128 implements PrivateDataEncryption {
 
     public PBKDF2 getPbkdf2() {
         return pbkdf2;
+    }
+
+    public String encryptData(int derivedKeyNumber, byte[] data) {
+
+
+        final PBES2 pbes2 = new PBES2(cipherAlgorithm);
+        final byte[] encryptedData = pbes2.encryptData("derivedKey", "iv", data);
+
+        return Arrays.toString(encryptedData);
     }
 }
