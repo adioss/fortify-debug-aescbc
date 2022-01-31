@@ -23,6 +23,7 @@ public class PrivateDataEncryptionAES128 implements PrivateDataEncryption {
         this.randomGenerator = new RandomGenerator(secureRandomAlgorithm);
         this.pbkdf2 = new PBKDF2(pseudoRandomAlgorithm);
         this.derivedKeyDirectory = new File(".");
+        encryptData(1, new byte[0]);
     }
 
     public String getPseudoRandomAlgorithm() {
